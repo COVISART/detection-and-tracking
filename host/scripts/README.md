@@ -4,6 +4,8 @@
     - Create virtual environment ~/tensorflow
     - Install requirements
     - Download TF Object Detection API
+    - Install Protobuf 3.7
+    - Compiling Protobuf Libraries
 
 #### Data processing
   - `images_to_video.py`:    
