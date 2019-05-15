@@ -164,13 +164,13 @@ def make_csv_line(bbox, width, height):
 if __name__ == '__main__':
     # Parse arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument('-i', '--input', default='../videos/HobbyKing.mp4',
+    ap.add_argument('-i', '--input', default='videos/RCBoeing747.mp4',
         metavar='SRC',
         help='path to video source')
     ap.add_argument('-t', '--target', default='airplane',
         metavar='TARGET_CLASS',
         help='target class to track')
-    ap.add_argument('-th', '--threshold', type=int, default=50,
+    ap.add_argument('-th', '--threshold', type=int, default=70,
         metavar='SCORE',
         help='detection score threshold (0-100)')
     ap.add_argument('-s', '--size', nargs=2, type=int, default=[640,480], 
@@ -197,9 +197,8 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     # Run
     os.system('clear')
-    art_utils.printAsciiArt('Autonomous')
-    art_utils.printAsciiArt('Tracking')
-    print('tracking-app v1.0.0 (C) weedle1912\n')
+    print('Autonomous Tracking\n')
+    print('tracking-app v0.1.0 (C) Covisart Ltd\n')
     print_settings(args)
     print('--- Running app:')
     run(args)
