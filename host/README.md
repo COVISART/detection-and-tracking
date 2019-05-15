@@ -23,5 +23,5 @@ $ ./scripts/env_setup.sh
 Activate the virtual environment, and run application:    
 ```
 $ source ~/covisart/bin/activate
-(tensorflow)$ python tracking-app.py
+(covisart)$ python tracking-app.py
 ```
