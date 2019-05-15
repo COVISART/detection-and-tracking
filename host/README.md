@@ -3,7 +3,7 @@
 #### Purpose:
 Object tracking application running on host computer.
 
-#### Requirements:
+#### Used Softwares:
 * Ubuntu 18.04
 * TensorFlow 1.13.1
 * Protobuf 3.7
