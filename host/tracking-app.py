@@ -5,7 +5,7 @@ import argparse
 
 # Modules
 from src.videocapture import VideoCaptureAsync
-from src.detector.detector import Detector
+from Detector.detector import Detector
 from src.tracker.tracker import Tracker
 
 # Utilities
@@ -26,12 +26,14 @@ TRACKER_TIMEOUT_SEC = 1.5
 def run(args):
     cwd = os.getcwd()
     # Path to checkpoint (ckpt)
-    model_path = os.path.join(cwd, 'src', 'detector', 'models', args['model'], 'frozen_inference_graph.pb')
+    model_path = os.path.join(cwd, 'Detector', 'models', args['model'], 'frozen_inference_graph.pb')
     # Path to label names
-    labels_path = os.path.join(cwd, 'src', 'detector', 'object_detection', 'data', args['label'] + '.pbtxt')
+    labels_path = os.path.join(cwd, 'Detector', 'object_detection', 'data', args['label'] + '.pbtxt')
 
     print('[i] Init.')
+
     cap = VideoCaptureAsync(args['input'], args['size'][0], args['size'][1], args['fps'])
+    #cap = VideoCaptureTreading(args['input'], args['size'][0], args['size'][1], args['fps'])
     detector = Detector(cap, model_path, labels_path, NUM_CLASSES)
     tracker = Tracker()
     ok, blank = cap.read()
@@ -51,7 +53,7 @@ def run(args):
         file_name = '%s%s' % (args['output'], args['ext'])
         out = cv2.VideoWriter(file_name, fourcc, args['fps'], (args['size'][0], args['size'][1]))
         # Comma Separated Values
-        file_csv = open(args['output'] + '.csv', 'w')
+    file_csv = open(args['output'] + '.csv', 'w')
 
     detector.start()
     detector.wait()  # First detection is slow
@@ -119,13 +121,15 @@ def run(args):
         draw_utils.draw_header(frame, target_class, score)
         draw_utils.draw_footer(frame, FPS_d, FPS_t, no_track, args['size'][1])
 
+        line = make_csv_line(bbox_s, args['size'][0], args['size'][1])
+        file_csv.write(line)
+
         # Display frame
         if args['write']:
             # Video
             out.write(frame)
             # CSV (normalized bbox)
-            line = make_csv_line(bbox_s, args['size'][0], args['size'][1])
-            file_csv.write(line)
+
         else:
             cv2.imshow('Frame: %dx%d, %.1f FPS' % (args['size'][0], args['size'][1], args['fps']), frame)
             if cv2.waitKey(1) == 27:  # Exit with 'esc' key
@@ -135,7 +139,7 @@ def run(args):
     cap.stop()
     if args['write']:
         out.release()
-        file_csv.close()
+    file_csv.close()
     cv2.destroyAllWindows()
 
 
@@ -154,7 +158,6 @@ def print_settings(args):
         print('--- Output ---')
         print('* File:      ' + str(args['output']) + str(args['ext']))
         print('* Codec:     ' + str(args['codec']))
-    print
 
 
 def make_csv_line(bbox, width, height):
@@ -169,39 +172,20 @@ def make_csv_line(bbox, width, height):
 if __name__ == '__main__':
     # Parse arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument('-i', '--input', default='videos/RCBoeing747.mp4',
-                    metavar='SRC',
-                    help='path to video source')
-    ap.add_argument('-t', '--target', default='airplane',
-                    metavar='TARGET_CLASS',
-                    help='target class to track')
-    ap.add_argument('-th', '--threshold', type=int, default=70,
-                    metavar='SCORE',
-                    help='detection score threshold (0-100)')
-    ap.add_argument('-s', '--size', nargs=2, type=int, default=[640, 480],
-                    metavar=('WIDTH', 'HEIGHT'),
-                    help='video frame size')
-    ap.add_argument('-f', '--fps', type=float, default=30,
-                    help='video playback rate')
-    ap.add_argument('-m', '--model', default='ssd_mobilenet_v2_coco_2018_03_29',
-                    metavar='MODEL_NAME',
-                    help='name of inference model')
-    ap.add_argument('-l', '--label', default='mscoco_label_map',
-                    metavar='LABEL_NAME',
-                    help='name of label file')
-    ap.add_argument('-w', '--write', action='store_true',
-                    help='wether to write results to file')
-    ap.add_argument('-o', '--output', default='out',
-                    metavar='FILE_NAME',
-                    help='name of output file (w/o ext)')
-    ap.add_argument('-c', '--codec', default='mp4v',
-                    metavar='FOURCC',
-                    help='fourcc codec for output file')
-    ap.add_argument('-e', '--ext', default='.mp4',
-                    help='ext (container) for output file')
+    ap.add_argument('-i', '--input', default='videos/su35.mp4', metavar='SRC', help='path to video source')
+    ap.add_argument('-t', '--target', default='airplane', metavar='TARGET_CLASS', help='target class to track')
+    ap.add_argument('-th', '--threshold', type=int, default=50, metavar='SCORE', help='detection score threshold (0-100)')
+    ap.add_argument('-s', '--size', nargs=2, type=int, default=[800, 600], metavar=('WIDTH', 'HEIGHT'), help='video frame size')
+    ap.add_argument('-f', '--fps', type=float, default=30, help='video playback rate')
+    ap.add_argument('-m', '--model', default='ssd_inception_v2_coco_2017_11_17', metavar='MODEL_NAME', help='name of inference model')
+    ap.add_argument('-l', '--label', default='mscoco_label_map', metavar='LABEL_NAME', help='name of label file')
+    ap.add_argument('-w', '--write', action='store_true', help='wether to write results to file')
+    ap.add_argument('-o', '--output', default='out', metavar='FILE_NAME', help='name of output file (w/o ext)')
+    ap.add_argument('-c', '--codec', default='mp4v', metavar='FOURCC', help='fourcc codec for output file')
+    ap.add_argument('-e', '--ext', default='.mp4', help='ext (container) for output file')
     args = vars(ap.parse_args())
     # Run
-    os.system('clear')
+    #os.system('clear')
     print('Autonomous Tracking\n')
     print('tracking-app v0.1.0 (C) Covisart Ltd\n')
     print_settings(args)

@@ -35,7 +35,6 @@ virtualenv ~/${ENV_NAME}
 source ~/${ENV_NAME}/bin/activate
 
 # -- Requirements --
-
 printf "${BL}[i] (2/3) Installing requirements:${NC}\n"
 if [ -e requirements.txt ]
 then
@@ -48,13 +47,13 @@ fi
 printf "${BL}[i] (3/3) Downloading TF Object Detection API:${NC}\n"
 mkdir tmp
 git clone https://github.com/tensorflow/models ./tmp/models
-cp -r tmp/models/research/object_detection/* src/detector/object_detection/
+cp -r tmp/models/research/object_detection/* Detector/object_detection/
 rm -r tmp
 
 printf "${BL}[i] Compiling Protobuf Libraries\n"
-cd src/detector
+cd Detector
 sudo protoc object_detection/protos/*.proto --python_out=.
-cd ../..
+cd ..
 
 # -- Info --
 printf "${BL}[i] Activate virtual environment:\n"

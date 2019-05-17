@@ -7,7 +7,7 @@
 def printAsciiArt(sentence):
     art = getArt(sentence)
     for line in art:
-        print line
+        print(line)
 
 def getArt(word):
     word = word.upper()

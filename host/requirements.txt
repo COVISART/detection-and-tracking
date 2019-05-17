@@ -1,6 +1,6 @@
-tensorflow==1.13.1
+tf-nightly-gpu ==1.14.1.dev20190429
 opencv-python==4.1.0.25
 opencv-contrib-python==4.1.0.25
 Pillow==6.0.0
-matplotlib==2.2.4
+matplotlib==3.0.3
 numpy==1.16.3
