@@ -58,6 +58,7 @@ class Detector:
                 # Get handles to input and output tensors
                 tensor_dict = get_handles()
                 image_tensor = tf.compat.v1.get_default_graph().get_tensor_by_name('image_tensor:0')
+                print(image_tensor)
                 while( self.running ):
                     # Get frame
                     ok, image_np = self.cap.read()
@@ -152,6 +153,7 @@ def get_handles():
         # The following process is only for single image
         detection_boxes = tf.squeeze(tensor_dict['detection_boxes'], [0])
         detection_masks = tf.squeeze(tensor_dict['detection_masks'], [0])
+
         # Reframe required. Translate mask from box coordinates to image coordinates, and fit the image size
         real_num_detection = tf.cast(tensor_dict['num_detections'][0], tf.int32)
         detection_boxes = tf.slice(detection_boxes, [0, 0], [real_num_detection, -1])
@@ -176,4 +178,4 @@ def convert_appropriate(output_dict):
     output_dict['detection_scores']     = output_dict['detection_scores'][0]
     if 'detection_masks' in output_dict:
         output_dict['detection_masks'] = output_dict['detection_masks'][0]
-    return output_dict 
+    return output_dict
